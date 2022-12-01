@@ -23,7 +23,7 @@
 
 ################################################################################
 # Imports
-from asyncio import StreamReaderProtocol
+#from asyncio import StreamReaderProtocol
 import streamlit as st
 from dataclasses import dataclass
 from typing import Any, List
@@ -46,18 +46,11 @@ import hashlib
 # 5. Add an attribute named `amount` of type `float`.
 # Note that you’ll use this new `Record` class as the data type of your `record` attribute in the next section.
 
-
-# @TODO
-# Create a Record Data Class that consists of the `sender`, `receiver`, and
-# `amount` attributes
 @dataclass
 class Record:
     sender: str
     receiver: str
     amount: float
-
-
-
 
 ################################################################################
 # Step 2:
@@ -72,10 +65,8 @@ class Record:
 
 @dataclass
 class Block:
-
     # Rename the `data` attribute to `record`, and set the data type to `Record`
-    data: Any
-
+    record: Record
     creator_id: int
     prev_hash: str = "0"
     timestamp: str = datetime.datetime.utcnow().strftime("%H:%M:%S")
@@ -100,7 +91,6 @@ class Block:
         sha.update(nonce)
 
         return sha.hexdigest()
-
 
 @dataclass
 class PyChain:
@@ -141,9 +131,7 @@ class PyChain:
 
 ################################################################################
 # Streamlit Code
-
 # Adds the cache decorator for Streamlit
-
 
 @st.cache(allow_output_mutation=True)
 def setup():
@@ -172,19 +160,19 @@ pychain = setup()
 
 # @TODO:
 # Delete the `input_data` variable from the Streamlit interface.
-input_data = st.text_input("Block Data")
+#input_data = st.text_input("Block Data")
 
 # @TODO:
 # Add an input area where you can get a value for `sender` from the user.
-sender = str(st.text_input("Enter sender information")).encode()
+sender = st.text_input("Enter sender information")#.encode()
 
 # @TODO:
 # Add an input area where you can get a value for `receiver` from the user.
-receiver = str(st.text_input("Enter receiver information")).encode()
+receiver = st.text_input("Enter receiver information")#.encode()
 
 # @TODO:
 # Add an input area where you can get a value for `amount` from the user.
-amount = str(st.number_input("Enter amount")).encode()
+amount = st.number_input("Enter amount")#.encode()
 
 if st.button("Add Block"):
     prev_block = pychain.chain[-1]
@@ -195,7 +183,7 @@ if st.button("Add Block"):
     # which is set equal to a `Record` that contains the `sender`, `receiver`,
     # and `amount` values
     new_block = Block(
-        data=input_data,
+        Record(sender=sender, receiver=receiver, amount=amount),
         creator_id=42,
         prev_hash=prev_block_hash
     )
